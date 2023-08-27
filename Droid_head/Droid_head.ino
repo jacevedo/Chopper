@@ -1,10 +1,3 @@
-//POLOLU Animations
-// Animation 0 => search periscope
-// Animation 1 => Open Doors 
-// Animation 2 => close Doors
-
-
-
 #include <FastLED.h>
 #include <Adafruit_NeoPixel.h>
 #include <PololuMaestro.h>
@@ -61,6 +54,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS_RIGTH_CENTER, RIGTH_CENTER_EYE,  NEO_RGBW);
 Adafruit_NeoPixel pixels_rigth_eye(NUMPIXELS_RIGTH, LEFT_EYE,  NEO_GRB);
 Adafruit_NeoPixel lader_ligth(NUMPIXELS_LADER_LIGTH, LADER_LIGTHS, NEO_GRB + NEO_KHZ800);
 MiniMaestro maestro(maestroSerial);
+int previousValues [] = {101, 0, -100, 0, 94, 94};
 int incomingByte = 0; // for incoming serial data
 bool justStarted = true;
 int currentAnimation = 0;
@@ -102,11 +96,30 @@ void loop() {
   if ( Serial1.available()) // Check to see if at least one character is available
   {
       String value = Serial1.readStringUntil('|');
-      Serial.print("I got value: ");
-      Serial.println(value);
       int* bodyValue = getBodyValue(value);
-      Serial.println(bodyValue[0]);
-      Serial.println(bodyValue[1]);
+      if(bodyValue[0] == 0 && previousValues[0] != bodyValue[1]){
+        if(bodyValue[1]>0){
+            maestro.restartScript(1);
+            Serial.println("restart animation 1");
+        } else {
+            maestro.restartScript(0);
+            Serial.println("restart animation 0");
+
+        }
+         previousValues[0] = bodyValue[1];
+      }
+      if(bodyValue[0] == 1 && previousValues[1] != bodyValue[1]){
+        if(bodyValue[1]>0){
+            maestro.restartScript(4);
+            Serial.println("restart animation 1");
+        } else {
+            maestro.restartScript(2);
+            Serial.println("restart animation 0");
+
+        }
+        
+         previousValues[1] = bodyValue[1];
+      }
   }
   if(justStarted){
     //animate motors per first time
