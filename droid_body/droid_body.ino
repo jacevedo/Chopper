@@ -12,7 +12,8 @@
 
 int pinsData [] = {49, 47, 45, 43, 41, 39};
 int previousValues [] = {0, 0, -100, 0, 94, 94};
-String stringName [] = {"0", "1", "2", "3", "4", "5"};
+String stringName [] = {"0", "1", "1", "2", "1", "2"};
+String typeReceptor [] = {"B", "B", "M", "B", "P", "P"};
 int differenceArray = 2;
 
 int ch3Value;
@@ -63,7 +64,7 @@ void loop() {
     int newValue = readChannel(pinsData[i], -100, 100, 0);
     if(newValue < previousValues[i] - 5 || newValue > previousValues[i] + 5) {
       previousValues[i] = newValue;
-      String valueUpdate = String( stringName[i] + ':' + newValue + '|');
+      String valueUpdate = String( typeReceptor[i] + ':' +stringName[i] + ':' + newValue + '|');
       Serial.print("need to send: ");
       Serial.println(valueUpdate.c_str());
       Serial1.write(valueUpdate.c_str());
